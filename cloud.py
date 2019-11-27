@@ -7,7 +7,7 @@ import sys
 mu = 20
 lambd = 50
 # toujours laisser 1 en premier seuil (F0 = 1 car on active le premier serveur quand un client entre)
-seuils = [1, int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3])]   # le dernier seuil est la capacité du buffer
+seuils = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]   # le dernier seuil est la capacité du buffer
 # K = len(seuils) - 1 = nombre de VM
 
 S_i = [0] * len(seuils) # len(seuils donne le nombre de serveurs)
@@ -56,12 +56,52 @@ pi_zero = 1 / (1 + sum(Sommes))
 print(pi_zero)
 
 P = [pi_zero]
+if(len(seuils) == 4):
+    for i in range(seuils[1] - 1):
+        P.append(P[-1] * ro(1))
+    for i in range(seuils[2] - seuils[1]):
+        P.append(P[-1] * ro(2))
+    for i in range(seuils[3] - seuils[2] + 1):
+        P.append(P[-1] * ro(3))
 
-for i in range(seuils[1] - 1):
-    P.append(P[-1] * ro(1))
-for i in range(seuils[2] - seuils[1]):
-    P.append(P[-1] * ro(2))
-for i in range(seuils[3] - seuils[2] + 1):
-    P.append(P[-1] * ro(3))
+if(len(seuils) == 7):
+    for i in range(seuils[1] - 1):
+        P.append(P[-1] * ro(1))
+    for i in range(seuils[2] - seuils[1]):
+        P.append(P[-1] * ro(2))
+    for i in range(seuils[3] - seuils[2]):
+        P.append(P[-1] * ro(3))
+    for i in range(seuils[4] - seuils[3]):
+        P.append(P[-1] * ro(4))
+    for i in range(seuils[5] - seuils[4]):
+        P.append(P[-1] * ro(5))
+    for i in range(seuils[6] - seuils[5] + 1):
+        P.append(P[-1] * ro(6))
+
+if(len(seuils) == 13):
+    for i in range(seuils[1] - 1):
+        P.append(P[-1] * ro(1))
+    for i in range(seuils[2] - seuils[1]):
+        P.append(P[-1] * ro(2))
+    for i in range(seuils[3] - seuils[2]):
+        P.append(P[-1] * ro(3))
+    for i in range(seuils[4] - seuils[3]):
+        P.append(P[-1] * ro(4))
+    for i in range(seuils[5] - seuils[4]):
+        P.append(P[-1] * ro(5))
+    for i in range(seuils[6] - seuils[5]):
+        P.append(P[-1] * ro(6))
+    for i in range(seuils[7] - seuils[6]):
+        P.append(P[-1] * ro(7))
+    for i in range(seuils[8] - seuils[7]):
+        P.append(P[-1] * ro(8))
+    for i in range(seuils[9] - seuils[8]):
+        P.append(P[-1] * ro(9))
+    for i in range(seuils[10] - seuils[9]):
+        P.append(P[-1] * ro(10))
+    for i in range(seuils[11] - seuils[10]):
+        P.append(P[-1] * ro(11))
+    for i in range(seuils[12] - seuils[11] + 1):
+        P.append(P[-1] * ro(12))
 
 print(sum(P))
