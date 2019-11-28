@@ -4,20 +4,28 @@ import sys
 
 
 
-mu = 20
+mu = 5
 lambd = 50
 # toujours laisser 1 en premier seuil (F0 = 1 car on active le premier serveur quand un client entre)
-seuils = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]   # le dernier seuil est la capacité du buffer
+seuils = [1, 30, 60, 100]   # le dernier seuil est la capacité du buffer
 # K = len(seuils) - 1 = nombre de VM
-
 S_i = [0] * len(seuils) # len(seuils donne le nombre de serveurs)
-#mu *= 12/len(seuils) 
+mu *= 12/(len(seuils) - 1)
 
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
     a, b = tee(iterable)
     next(b, None)
     return zip(a, b)
+
+def nested_sum(L):
+    total = 0  # don't use `sum` as a variable name
+    for i in L:
+        if isinstance(i, list):  # checks if `i` is a list
+            total += nested_sum(i)
+        else:
+            total += i
+    return total
 
 def ro(i):
     return lambd/(i*mu)
@@ -104,4 +112,33 @@ if(len(seuils) == 13):
     for i in range(seuils[12] - seuils[11] + 1):
         P.append(P[-1] * ro(12))
 
-print(sum(P))
+def esperanceClients():
+    E = 0
+    for idx, valeur in enumerate(P):
+        E += idx * valeur
+    return E
+def probaVmAllumee():
+    
+    PVM = [P[:seuils[1]]]
+    for i in range(2, len(seuils)):
+        PVM.append(P[seuils[i - 1] : seuils[i]])
+    PVM[-1].append(P[-1]) # il manque P[B] après la boucle
+#    print("verification", nested_sum(PVM)) # cette somme de probas vaut 1 
+
+    P2 = []
+    for probas in PVM:
+        P2.append(sum(probas))
+    return P2
+
+def esperanceVM():
+    VM = probaVmAllumee()
+    E = 0
+    for idx, valeur in enumerate(VM):
+        E += (idx +1) * (valeur)
+    return E
+
+print("Somme des probas:", sum(P))
+print("proba de rejet:", P[-1])
+print("esperance:", esperanceClients())
+print("proba VM allumée:", probaVmAllumee())
+print("esperance VM:", esperanceVM())
