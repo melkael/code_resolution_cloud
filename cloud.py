@@ -5,18 +5,21 @@ import sys
 
 
 mu = 5
-lambd = 50
+#lambd = 50
+if len(sys.argv) > 3:
+    lambd = int(sys.argv[1])
+    seuils = [1]
+    for element in sys.argv[2:]:
+        seuils.append(int(element))
+else:
+    print("Usage: python3 cloud.py lambda seuil1 seuil2 [seuil3...] capacité")
+    exit(0)
 # toujours laisser 1 en premier seuil (F0 = 1 car on active le premier serveur quand un client entre)
-seuils = [1, 30, 60, 100]   # le dernier seuil est la capacité du buffer
+# seuils = [1, 30, 60, 100]   # le dernier seuil est la capacité du buffer
 # K = len(seuils) - 1 = nombre de VM
+
 S_i = [0] * len(seuils) # len(seuils donne le nombre de serveurs)
 mu *= 12/(len(seuils) - 1)
-
-def pairwise(iterable):
-    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
-    a, b = tee(iterable)
-    next(b, None)
-    return zip(a, b)
 
 def nested_sum(L):
     total = 0  # don't use `sum` as a variable name
